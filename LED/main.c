@@ -14,7 +14,7 @@ void sleep(unsigned int time)
 
 int main()
 {
-	P1 = 0xC0;
+	P1 = 0x00;
 	sleep(1000);
 	while(1)
 	{
