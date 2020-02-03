@@ -22,9 +22,3 @@
 ## 项目
 
 * [LED](https://github.com/masterzhk/51MCU-Lab/tree/master/LED)
-
-## 奖励一下
-
-如果您觉得本仓库内容对您有用，想要略表谢意，那么...
-
-![AlipayQRCode](https://github.com/masterzhk/Storage/blob/master/image/AlipayQRCode.jpg)
