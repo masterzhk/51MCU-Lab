@@ -17,23 +17,54 @@ void InitTimer0();
 void StartTimer0();
 void StopTimer0();
 
-void sleep10ms(unsigned int time);
+void sleep10ms(unsigned int time, unsigned int displayBase);
 
 void main()
 {
 	InitTimer0();
 
-	sleep10ms(100);
+	P1 = 0x00;
+	sleep10ms(100, 0);
 	while(1)
 	{
 		P1 = RED;
-		sleep10ms(3000);
+		sleep10ms(2700, 300);
+		
+		P1 = 0xff;
+		sleep10ms(50, 250);
+		P1 = RED;
+		sleep10ms(50, 200);
+		
+		P1 = 0xff;
+		sleep10ms(50, 150);
+		P1 = RED;
+		sleep10ms(50, 100);
+		
+		P1 = 0xff;
+		sleep10ms(50, 50);
+		P1 = RED;
+		sleep10ms(50, 0);
 		
 		P1 = GREEN;
-		sleep10ms(1000);
+		sleep10ms(700, 300);
+		
+		P1 = 0xff;
+		sleep10ms(50, 250);
+		P1 = GREEN;
+		sleep10ms(50, 200);
+		
+		P1 = 0xff;
+		sleep10ms(50, 150);
+		P1 = GREEN;
+		sleep10ms(50, 100);
+		
+		P1 = 0xff;
+		sleep10ms(50, 50);
+		P1 = GREEN;
+		sleep10ms(50, 0);
 		
 		P1 = YELLOW;
-		sleep10ms(300);
+		sleep10ms(300, 0);
 	}
 }
 
@@ -63,7 +94,7 @@ void StopTimer0()
 	TR0 = 0; // Stop Timing
 }
 
-void sleep10ms(unsigned int time)
+void sleep10ms(unsigned int time, unsigned int displayBase)
 {
 	int i;
 	int tmp;
@@ -78,7 +109,7 @@ void sleep10ms(unsigned int time)
 	
 	// Display Remain Time
 	do{
-		tmp = (time - g_timeCount) / 10;
+		tmp = (time + displayBase - g_timeCount) / 10;
 		tmp = tmp < 0 ? 0 : tmp;
 
 		// Get The Display Value
