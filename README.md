@@ -21,4 +21,4 @@
 
 ## 项目
 
-* [LED](https://github.com/masterzhk/51MCU-Lab/tree/master/LED)
+* [Traffic Signal](https://github.com/masterzhk/51MCU-Lab/tree/master/Traffic Signal)
