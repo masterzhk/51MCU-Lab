@@ -21,4 +21,4 @@
 
 ## 项目
 
-* [Traffic Signal](https://github.com/masterzhk/51MCU-Lab/tree/master/Traffic Signal)
+* [Traffic Signal](https://github.com/masterzhk/51MCU-Lab/tree/master/Traffic%20Signal)
