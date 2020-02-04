@@ -8,6 +8,7 @@
 
 #define MS10 56320
 
+// 0~F Display Code
 unsigned char g_ledCode[16] = { 0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f, 0x77, 0x7c, 0x39, 0x5e, 0x79, 0x71 };
 
 unsigned int g_timeCount = 0;
@@ -74,10 +75,13 @@ void sleep10ms(unsigned int time)
   tmp = time;
 	
 	StartTimer0();
+	
+	// Display Remain Time
 	do{
 		tmp = (time - g_timeCount) / 10;
 		tmp = tmp < 0 ? 0 : tmp;
 
+		// Get The Display Value
 		for(i = 3; i > displayIndex; --i)
 		{
 			tmp /= 10;
@@ -85,6 +89,7 @@ void sleep10ms(unsigned int time)
 		tmp %= 10;
 		displayValue = g_ledCode[tmp];
 		
+		// Get The Display Index Value
 		switch(displayIndex)
 		{
 			case 0:
@@ -97,7 +102,7 @@ void sleep10ms(unsigned int time)
 				
 			case 2:
 				p2 = 0x4f;
-			  displayValue = displayValue | 0x80;
+			  displayValue = displayValue | 0x80; // Add The Decimal Point
 				break;
 			
 			case 3:
@@ -105,11 +110,12 @@ void sleep10ms(unsigned int time)
 				break;
 		}
 		
-		P2 = P2 & 0x0f;
+		P2 = P2 & 0x0f; // Turn Off The Display
 
-		P0 = displayValue;
-		P2 = p2;
+		P0 = displayValue; // Set Up The Display Code
+		P2 = p2; // Turn On The Display
 		
+		// Move The Display Index
 		++displayIndex;
 		displayIndex = displayIndex % 4;
 	}

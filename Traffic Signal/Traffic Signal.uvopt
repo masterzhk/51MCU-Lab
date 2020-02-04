@@ -148,7 +148,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>MAIN.C</Filename>
+          <Filename>F:\Project\51MCU-Lab\Traffic Signal\MAIN.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\MAIN\81</Expression>
         </Bp>
@@ -164,7 +164,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>MAIN.C</Filename>
+          <Filename>F:\Project\51MCU-Lab\Traffic Signal\MAIN.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\MAIN\87</Expression>
         </Bp>
@@ -180,7 +180,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>MAIN.C</Filename>
+          <Filename>F:\Project\51MCU-Lab\Traffic Signal\MAIN.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\MAIN\108</Expression>
         </Bp>
