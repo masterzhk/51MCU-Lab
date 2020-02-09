@@ -1,5 +1,4 @@
 #include <REG51.H>
-#include <MATH.H>
 
 #define RED  0xFC;
 #define GREEN 0xF3;
@@ -17,54 +16,54 @@ void InitTimer0();
 void StartTimer0();
 void StopTimer0();
 
-void sleep10ms(unsigned int time, unsigned int displayBase);
+void Sleep10ms(unsigned int time, unsigned int displayBase);
 
 void main()
 {
 	InitTimer0();
 
 	P1 = 0x00;
-	sleep10ms(100, 0);
+	Sleep10ms(100, 0);
 	while(1)
 	{
 		P1 = RED;
-		sleep10ms(2700, 300);
+		Sleep10ms(2700, 300);
 		
 		P1 = 0xff;
-		sleep10ms(50, 250);
+		Sleep10ms(50, 250);
 		P1 = RED;
-		sleep10ms(50, 200);
+		Sleep10ms(50, 200);
 		
 		P1 = 0xff;
-		sleep10ms(50, 150);
+		Sleep10ms(50, 150);
 		P1 = RED;
-		sleep10ms(50, 100);
+		Sleep10ms(50, 100);
 		
 		P1 = 0xff;
-		sleep10ms(50, 50);
+		Sleep10ms(50, 50);
 		P1 = RED;
-		sleep10ms(50, 0);
+		Sleep10ms(50, 0);
 		
 		P1 = GREEN;
-		sleep10ms(700, 300);
-		
-		P1 = 0xff;
-		sleep10ms(50, 250);
-		P1 = GREEN;
-		sleep10ms(50, 200);
+		Sleep10ms(700, 300);
 		
 		P1 = 0xff;
-		sleep10ms(50, 150);
+		Sleep10ms(50, 250);
 		P1 = GREEN;
-		sleep10ms(50, 100);
+		Sleep10ms(50, 200);
 		
 		P1 = 0xff;
-		sleep10ms(50, 50);
+		Sleep10ms(50, 150);
 		P1 = GREEN;
-		sleep10ms(50, 0);
+		Sleep10ms(50, 100);
+		
+		P1 = 0xff;
+		Sleep10ms(50, 50);
+		P1 = GREEN;
+		Sleep10ms(50, 0);
 		
 		P1 = YELLOW;
-		sleep10ms(300, 0);
+		Sleep10ms(300, 0);
 	}
 }
 
@@ -94,7 +93,7 @@ void StopTimer0()
 	TR0 = 0; // Stop Timing
 }
 
-void sleep10ms(unsigned int time, unsigned int displayBase)
+void Sleep10ms(unsigned int time, unsigned int displayBase)
 {
 	int i;
 	int tmp;
@@ -150,7 +149,7 @@ void sleep10ms(unsigned int time, unsigned int displayBase)
 		++displayIndex;
 		displayIndex = displayIndex % 4;
 	}
-	while(time > g_timeCount);
+	while(time - g_timeCount > 0);
 	
 	P0 = g_ledCode[0];
 	P2 = P2 | 0xf0;;

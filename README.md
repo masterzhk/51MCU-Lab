@@ -21,6 +21,8 @@
 
 ## 项目
 
-* [Traffic Signal](https://github.com/masterzhk/51MCU-Lab/tree/master/Traffic%20Signal)
+* [交通信息灯](https://github.com/masterzhk/51MCU-Lab/tree/master/Traffic%20Signal)
 
-* [Serial Com](https://github.com/masterzhk/51MCU-Lab/tree/master/Serial%20Com)
+* [串口通信](https://github.com/masterzhk/51MCU-Lab/tree/master/Serial%20Com)
+
+* [矩阵键盘](https://github.com/masterzhk/51MCU-Lab/tree/master/Matrix%20Keyboard)

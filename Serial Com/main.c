@@ -66,14 +66,15 @@ void InitSerialPort()
 
 void Send()
 {
-	unsigned char index = 0;
+	static unsigned char index = 0;
+
 	
-	for(index = 0; index < 12; ++index)
-	{
-		SBUF = g_message[index];
-		while(!TI);
-		TI = 0;
-	}
+	SBUF = g_message[index++];
+	while(!TI);
+	TI = 0;
+	
+	if (index > 11)
+	{index = 0;}
 }
 
 void InitTimer0()
