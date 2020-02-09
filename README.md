@@ -22,3 +22,5 @@
 ## 项目
 
 * [Traffic Signal](https://github.com/masterzhk/51MCU-Lab/tree/master/Traffic%20Signal)
+
+* [Serial Com](https://github.com/masterzhk/51MCU-Lab/tree/master/Serial%20Com)
