@@ -151,11 +151,9 @@ void main()
 				break;
 			
 			case 0x42:
-				ac = WaitLcd();
-			  --ac;
-				SetDDAddress(ac);
+				Shift(0, 0);
 				WriteData(' ');
-				SetDDAddress(ac);
+				Shift(0, 0);
 				break;
 			
 			case 0x43:
