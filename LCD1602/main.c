@@ -1,4 +1,5 @@
 #include <REG51.H>
+#include <INTRINS.H>
 
 #define D P0
 #define MS10 56320
@@ -100,6 +101,7 @@ unsigned char ReadData();
 
 /*
 读空闲状态字
+返回：AC地址
 */
 unsigned char WaitLcd();
 
@@ -117,6 +119,7 @@ unsigned char asciiCode[] = {0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x3
 
 void main()
 {
+	unsigned char ac = 0x00;
 	unsigned char keyValue = 0x00;
 	unsigned char index = 0;
 	
@@ -148,9 +151,11 @@ void main()
 				break;
 			
 			case 0x42:
-				Shift(0, 0);
+				ac = WaitLcd();
+			  --ac;
+				SetDDAddress(ac);
 				WriteData(' ');
-				Shift(0, 0);
+				SetDDAddress(ac);
 				break;
 			
 			case 0x43:
@@ -172,19 +177,20 @@ void WriteInstruction(bit rs, unsigned char d)
 	RW = 0;
 	D = d;
 	E = 1;
-	Sleep10ms(1);
+	_nop_();
 	E = 0;
-	Sleep10ms(1);
+	_nop_();
 }
 
 unsigned char ReadInstruction(bit rs)
 {
 	unsigned char d;
 	
+	D = 0xff; // 释放IO口，不然接收到的数据不对
 	RS = rs;
 	RW = 1;
 	E = 1;
-	Sleep10ms(1);
+	_nop_();
 	d = D;
 	
 	return d;
