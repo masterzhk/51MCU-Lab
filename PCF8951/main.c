@@ -5,7 +5,11 @@
 
 #define T0 56320
 
+#define WADDR 0x90
+#define RADDR 0x91
+
 #define NOP1 nop_()
+#define NOP5 _nop_();_nop_();_nop_();_nop_();_nop_()
 #define NOP6 _nop_();_nop_();_nop_();_nop_();_nop_();_nop_()
 
 sbit SCL = P1 ^ 6;
@@ -154,7 +158,7 @@ void main()
 			
 			case '1':
 				I2C_Start();
-				ack = I2C_Send(0x90);
+				ack = I2C_Send(WADDR);
 				if (ack)
 				{
 					WriteStr("F!");
@@ -177,7 +181,7 @@ void main()
 			
 			case '2':
 				I2C_Start();
-				ack = I2C_Send(0x90);
+				ack = I2C_Send(WADDR);
 				if (ack)
 				{
 					WriteStr("F!");
@@ -200,7 +204,7 @@ void main()
 			
 			case '3':
 				I2C_Start();
-				ack = I2C_Send(0x90);
+				ack = I2C_Send(WADDR);
 				if (ack)
 				{
 					WriteStr("F!");
@@ -223,7 +227,7 @@ void main()
 			
 			case '4':
 				I2C_Start();
-				ack = I2C_Send(0x90);
+				ack = I2C_Send(WADDR);
 				if (ack)
 				{
 					WriteStr("F!");
@@ -254,7 +258,7 @@ void main()
 			
 			case 'A':
 				I2C_Start();
-				ack = I2C_Send(0x91);
+				ack = I2C_Send(RADDR);
 				if (ack)
 				{
 					WriteStr("F!");
@@ -329,18 +333,19 @@ void I2C_Start()
 {
 	SDA = 1;
 	SCL = 1;
-	NOP6;
+	NOP6; // START condition set-up time >= 4.7 us
+
 	SDA = 0;
-	NOP6;
+	NOP5; // START condition hold time >= 4.0 us
 }
 
 void I2C_Stop()
 {
 	SDA = 0;
 	SCL = 1;
-	NOP6;
+	NOP5; // STOP condition set-up time >= 4.0 us
+
 	SDA = 1;
-	NOP6;
 }
 
 bit I2C_Send(unsigned char d)
@@ -352,17 +357,19 @@ bit I2C_Send(unsigned char d)
 	{
 		SCL = 0;
 		SDA = d & (0x01 << index);
-		NOP6;
+		NOP6; // SCL LOW time >= 4.7 us
+
 		SCL = 1;
-		NOP6;
+		NOP5; // SCL HIGH time >= 4.0 us
 	}
 	
-	SDA = 1;
 	SCL = 0;
+	SDA = 1;
 	NOP6;
+
 	SCL = 1;
 	ack = SDA;
-	NOP6;
+	NOP5;
 	
 	return ack;
 }
@@ -372,23 +379,25 @@ void I2C_Ack(bit ack)
 	SCL = 0;
 	SDA = ack;
 	NOP6;
+
 	SCL = 1;
-	NOP6;
+	NOP5;
 }
 
 unsigned char I2C_Recv()
 {
 	unsigned char d = 0x00;
 	char index = 0;
-	SDA = 1;
-	
+
 	for(index = 7; index >= 0; --index)
 	{
 		SCL = 0;
+		SDA = 1;
 		NOP6;
+		
 		SCL = 1;
 		d = d | ((unsigned char)(SDA) << index);
-		NOP6;
+		NOP5;
 	}
 	
 	I2C_Ack(0);
