@@ -177,7 +177,7 @@ void main()
 			ack = I2C_Send(WADDR);
 			if (ack)
 			{
-				WriteStr("First Byte Error Ack!");
+				WriteStr("FirstByteErrorAck!");
 				I2C_Stop();
 				break;
 			}
@@ -185,13 +185,14 @@ void main()
 			ack = I2C_Send(0x00);
 			if (ack)
 			{
-				WriteStr("Second Byte Error Ack!");
+				WriteStr("SecondByteErrorAck!");
 				I2C_Stop();
 				break;
 			}
 
 			I2C_Stop();
-			WriteStr("Switch To Channel 0");
+			WriteStr("SwitchToChannel0");
+			
 			break;
 
 		case '2':
@@ -200,7 +201,7 @@ void main()
 			ack = I2C_Send(WADDR);
 			if (ack)
 			{
-				WriteStr("First Byte Error Ack!");
+				WriteStr("FirstByteErrorAck!");
 				I2C_Stop();
 				break;
 			}
@@ -208,13 +209,13 @@ void main()
 			ack = I2C_Send(0x01);
 			if (ack)
 			{
-				WriteStr("Second Byte Error Ack!");
+				WriteStr("SecondByteErrorAck!");
 				I2C_Stop();
 				break;
 			}
-
+			
 			I2C_Stop();
-			WriteStr("Switch To Channel 1");
+			WriteStr("SwitchToChannel1");
 			break;
 
 		case '3':
@@ -223,7 +224,7 @@ void main()
 			ack = I2C_Send(WADDR);
 			if (ack)
 			{
-				WriteStr("First Byte Error Ack!");
+				WriteStr("FirstByteErrorAck!");
 				I2C_Stop();
 				break;
 			}
@@ -231,13 +232,13 @@ void main()
 			ack = I2C_Send(0x02);
 			if (ack)
 			{
-				WriteStr("Second Byte Error Ack!");
+				WriteStr("SecondByteErrorAck!");
 				I2C_Stop();
 				break;
 			}
-
+			
 			I2C_Stop();
-			WriteStr("Switch To Channel 2");
+			WriteStr("SwitchToChannel2");
 			break;
 
 		case '4':
@@ -246,7 +247,7 @@ void main()
 			ack = I2C_Send(WADDR);
 			if (ack)
 			{
-				WriteStr("First Byte Error Ack!");
+				WriteStr("FirstByteErrorAck!");
 				I2C_Stop();
 				break;
 			}
@@ -254,13 +255,13 @@ void main()
 			ack = I2C_Send(0x03);
 			if (ack)
 			{
-				WriteStr("Second Byte Error Ack!");
+				WriteStr("SecondByteErrorAck!");
 				I2C_Stop();
 				break;
 			}
-
+			
 			I2C_Stop();
-			WriteStr("Switch To Channel 3");
+			WriteStr("SwitchToChannel3");
 			break;
 
 		case '*':
@@ -272,11 +273,12 @@ void main()
 			break;
 
 		case 'A':
+			ClearDisplay();
 			I2C_Start();
 			ack = I2C_Send(RADDR);
 			if (ack)
 			{
-				WriteStr("First Byte Error Ack!");
+				WriteStr("FirstByteErrorAck!");
 				I2C_Stop();
 				break;
 			}
@@ -285,7 +287,7 @@ void main()
 
 			I2C_Stop();
 
-			WriteStr("Readed Data:0x");
+			WriteStr("ReadedData:0x");
 			WriteData(g_HexAsciiCode[(d & 0xf0) >> 4]);
 			WriteData(g_HexAsciiCode[d & 0x0f]);
 
@@ -348,7 +350,9 @@ void Sleep(unsigned int time)
 
 void I2C_Start()
 {
+	SCL = 0;
 	SDA = 1;
+
 	SCL = 1;
 	NOP6; // START condition set-up time >= 4.7 us
 
@@ -358,7 +362,9 @@ void I2C_Start()
 
 void I2C_Stop()
 {
+	SCL = 0;
 	SDA = 0;
+
 	SCL = 1;
 	NOP5; // STOP condition set-up time >= 4.0 us
 
