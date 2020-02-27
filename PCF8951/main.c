@@ -1,16 +1,27 @@
 #include <REG51.h>
 #include <INTRINS.H>
 
+#define NOP nop_()
+#define NOP5 \
+	_nop_(); \
+	_nop_(); \
+	_nop_(); \
+	_nop_(); \
+	_nop_()
+#define NOP6 \
+	_nop_(); \
+	_nop_(); \
+	_nop_(); \
+	_nop_(); \
+	_nop_(); \
+	_nop_()
+
 #define D P0
 
 #define T0 56320
 
 #define WADDR 0x90
 #define RADDR 0x91
-
-#define NOP1 nop_()
-#define NOP5 _nop_();_nop_();_nop_();_nop_();_nop_()
-#define NOP6 _nop_();_nop_();_nop_();_nop_();_nop_();_nop_()
 
 sbit SCL = P1 ^ 6;
 sbit SDA = P1 ^ 7;
@@ -30,7 +41,7 @@ void I2C_Start();
 void I2C_Stop();
 bit I2C_Send(unsigned char d);
 void I2C_Ack(bit ack);
-unsigned char I2C_Recv();
+unsigned char I2C_Recv(bit ack);
 
 /*
 写指令
@@ -121,7 +132,11 @@ unsigned char ReadData();
 */
 unsigned char WaitLcd();
 
-void WriteStr(unsigned char * str);
+/*
+写数据
+str：数据
+*/
+void WriteStr(unsigned char *str);
 
 unsigned int g_timeCount = 0;
 
@@ -131,156 +146,157 @@ unsigned int g_timeCount = 0;
 7 8 9 C
 * 0 # D
 */
-unsigned char g_keyCode[4][4] = { {0x31, 0x32, 0x33, 0x41}, {0x34, 0x35, 0x36, 0x42}, {0x37, 0x38, 0x39, 0x43}, {0x2a, 0x30, 0x23, 0x44} };
+unsigned char g_KeyCode[4][4] = {{'1', '2', '3', 'A'}, {'4', '5', '6', 'B'}, {'7', '8', '9', 'C'}, {'*', '0', '#', 'D'}};
 
-unsigned char asciiCode[] = {0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46};
+unsigned char g_HexAsciiCode[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
 void main()
 {
 	unsigned char d = 0x00;
 	bit ack = 1;
 	unsigned char keyValue = 0x00;
-	
+
 	InitTimer0();
-	
+
 	SetFunction(1, 1, 1);
 	SetEntryMode(1, 0);
 	ClearDisplay();
 	DisplayControl(1, 1, 0);
-	
-	while(1)
+
+	while (1)
 	{
 		keyValue = GetKeyPress();
-		switch(keyValue)
+		switch (keyValue)
 		{
-			case 0x00:
-				break;
-			
-			case '1':
-				I2C_Start();
-				ack = I2C_Send(WADDR);
-				if (ack)
-				{
-					WriteStr("F!");
-				}
-				else
-				{
-					WriteStr("S!");
-				}
-				ack = I2C_Send(0x00);
-				if (ack)
-				{
-					WriteStr("F!");
-				}
-				else
-				{
-					WriteStr("S!");
-				}
+		case 0x00:
+			break;
+
+		case '1':
+			ClearDisplay();
+			I2C_Start();
+			ack = I2C_Send(WADDR);
+			if (ack)
+			{
+				WriteStr("First Byte Error Ack!");
 				I2C_Stop();
 				break;
-			
-			case '2':
-				I2C_Start();
-				ack = I2C_Send(WADDR);
-				if (ack)
-				{
-					WriteStr("F!");
-				}
-				else
-				{
-					WriteStr("S!");
-				}
-				ack = I2C_Send(0x01);
-				if (ack)
-				{
-					WriteStr("F!");
-				}
-				else
-				{
-					WriteStr("S!");
-				}
+			}
+
+			ack = I2C_Send(0x00);
+			if (ack)
+			{
+				WriteStr("Second Byte Error Ack!");
 				I2C_Stop();
 				break;
-			
-			case '3':
-				I2C_Start();
-				ack = I2C_Send(WADDR);
-				if (ack)
-				{
-					WriteStr("F!");
-				}
-				else
-				{
-					WriteStr("S!");
-				}
-				ack = I2C_Send(0x02);
-				if (ack)
-				{
-					WriteStr("F!");
-				}
-				else
-				{
-					WriteStr("S!");
-				}
+			}
+
+			I2C_Stop();
+			WriteStr("Switch To Channel 0");
+			break;
+
+		case '2':
+			ClearDisplay();
+			I2C_Start();
+			ack = I2C_Send(WADDR);
+			if (ack)
+			{
+				WriteStr("First Byte Error Ack!");
 				I2C_Stop();
 				break;
-			
-			case '4':
-				I2C_Start();
-				ack = I2C_Send(WADDR);
-				if (ack)
-				{
-					WriteStr("F!");
-				}
-				else
-				{
-					WriteStr("S!");
-				}
-				ack = I2C_Send(0x03);
-				if (ack)
-				{
-					WriteStr("F!");
-				}
-				else
-				{
-					WriteStr("S!");
-				}
+			}
+
+			ack = I2C_Send(0x01);
+			if (ack)
+			{
+				WriteStr("Second Byte Error Ack!");
 				I2C_Stop();
 				break;
-			
-			case '*':
-				Shift(1, 0);
-				break;
-			
-			case '#':
-				Shift(1, 1);
-				break;
-			
-			case 'A':
-				I2C_Start();
-				ack = I2C_Send(RADDR);
-				if (ack)
-				{
-					WriteStr("F!");
-				}
-				else
-				{
-					WriteStr("S!");
-				}
-				
-				d = I2C_Recv();
-				WriteStr("-");
-				WriteData(asciiCode[(d & 0xf0) >> 4]);
-				WriteData(asciiCode[d & 0x0f]);
+			}
+
+			I2C_Stop();
+			WriteStr("Switch To Channel 1");
+			break;
+
+		case '3':
+			ClearDisplay();
+			I2C_Start();
+			ack = I2C_Send(WADDR);
+			if (ack)
+			{
+				WriteStr("First Byte Error Ack!");
 				I2C_Stop();
 				break;
-			
-			case 'C':
-				ClearDisplay();
+			}
+
+			ack = I2C_Send(0x02);
+			if (ack)
+			{
+				WriteStr("Second Byte Error Ack!");
+				I2C_Stop();
 				break;
-			
-			default:
+			}
+
+			I2C_Stop();
+			WriteStr("Switch To Channel 2");
+			break;
+
+		case '4':
+			ClearDisplay();
+			I2C_Start();
+			ack = I2C_Send(WADDR);
+			if (ack)
+			{
+				WriteStr("First Byte Error Ack!");
+				I2C_Stop();
 				break;
+			}
+
+			ack = I2C_Send(0x03);
+			if (ack)
+			{
+				WriteStr("Second Byte Error Ack!");
+				I2C_Stop();
+				break;
+			}
+
+			I2C_Stop();
+			WriteStr("Switch To Channel 3");
+			break;
+
+		case '*':
+			Shift(1, 0);
+			break;
+
+		case '#':
+			Shift(1, 1);
+			break;
+
+		case 'A':
+			I2C_Start();
+			ack = I2C_Send(RADDR);
+			if (ack)
+			{
+				WriteStr("First Byte Error Ack!");
+				I2C_Stop();
+				break;
+			}
+
+			d = I2C_Recv(1);
+
+			I2C_Stop();
+
+			WriteStr("Readed Data:0x");
+			WriteData(g_HexAsciiCode[(d & 0xf0) >> 4]);
+			WriteData(g_HexAsciiCode[d & 0x0f]);
+
+			break;
+
+		case 'C':
+			ClearDisplay();
+			break;
+
+		default:
+			break;
 		}
 	}
 }
@@ -289,10 +305,10 @@ void InitTimer0()
 {
 	// Enable Interrupt
 	EA = 1;
-	
+
 	// Enable Timer 0 Interrupt
 	ET0 = 1;
-	
+
 	// Set Timer 0 To Mode 1
 	TMOD = TMOD & 0xf0;
 	TMOD = TMOD | 0x01;
@@ -302,7 +318,7 @@ void StartTimer0()
 {
 	TL0 = T0;
 	TH0 = T0 >> 8;
-	
+
 	TR0 = 1; // Start Timing
 }
 
@@ -314,7 +330,7 @@ void StopTimer0()
 void Timer0Routine() interrupt 1
 {
 	++g_timeCount;
-	
+
 	TL0 = T0;
 	TH0 = T0 >> 8;
 }
@@ -324,11 +340,12 @@ void Sleep(unsigned int time)
 	g_timeCount = 0;
 	StartTimer0();
 
-	while(time - g_timeCount > 0);
+	while (time - g_timeCount > 0)
+		;
 
 	StopTimer0();
 }
-	
+
 void I2C_Start()
 {
 	SDA = 1;
@@ -352,8 +369,8 @@ bit I2C_Send(unsigned char d)
 {
 	bit ack = 0;
 	char index = 0;
-	
-	for(index = 7; index >= 0; --index)
+
+	for (index = 7; index >= 0; --index)
 	{
 		SCL = 0;
 		SDA = d & (0x01 << index);
@@ -362,7 +379,7 @@ bit I2C_Send(unsigned char d)
 		SCL = 1;
 		NOP5; // SCL HIGH time >= 4.0 us
 	}
-	
+
 	SCL = 0;
 	SDA = 1;
 	NOP6;
@@ -370,7 +387,7 @@ bit I2C_Send(unsigned char d)
 	SCL = 1;
 	ack = SDA;
 	NOP5;
-	
+
 	return ack;
 }
 
@@ -384,52 +401,52 @@ void I2C_Ack(bit ack)
 	NOP5;
 }
 
-unsigned char I2C_Recv()
+unsigned char I2C_Recv(bit ack)
 {
 	unsigned char d = 0x00;
 	char index = 0;
 
-	for(index = 7; index >= 0; --index)
+	for (index = 7; index >= 0; --index)
 	{
 		SCL = 0;
 		SDA = 1;
 		NOP6;
-		
+
 		SCL = 1;
 		d = d | ((unsigned char)(SDA) << index);
 		NOP5;
 	}
-	
-	I2C_Ack(0);
-	
+
+	I2C_Ack(ack);
+
 	return d;
 }
 
 void WriteInstruction(bit rs, unsigned char d)
-{	
+{
 	WaitLcd();
-	
+
 	RS = rs;
 	RW = 0;
 	D = d;
 	E = 1;
-	NOP1;
+	NOP;
 	E = 0;
-	NOP1;
+	NOP;
 }
 
 unsigned char ReadInstruction(bit rs)
 {
 	unsigned char d;
-	
+
 	// 释放IO口，不然接收的数据会错
 	D = 0xff;
 	RS = rs;
 	RW = 1;
 	E = 1;
-	NOP1;
+	NOP;
 	d = D;
-	
+
 	return d;
 }
 
@@ -504,20 +521,19 @@ unsigned char ReadData()
 unsigned char WaitLcd()
 {
 	unsigned char d = 0x00;
-	
+
 	do
 	{
 		d = ReadBFAndAddress();
-	}
-	while((d & 0x80) == 0x80);
-	
+	} while ((d & 0x80) == 0x80);
+
 	return d;
 }
 
-void WriteStr(unsigned char * str)
+void WriteStr(unsigned char *str)
 {
 	unsigned char index = 0;
-	while(1)
+	while (1)
 	{
 		if (str[index] == 0x00)
 		{
@@ -527,7 +543,7 @@ void WriteStr(unsigned char * str)
 		{
 			WriteData(str[index]);
 		}
-		
+
 		++index;
 	}
 }
@@ -536,19 +552,19 @@ unsigned char GetKeyPress()
 {
 	unsigned char row, col;
 	unsigned char p;
-	
+
 	row = 0;
 	col = 0;
-	
+
 	P3 = 0x0f;
-	if(P3 != 0x0f)
+	if (P3 != 0x0f)
 	{
 		Sleep(1);
-		if(P3 != 0x0f)
+		if (P3 != 0x0f)
 		{
 			row = 0;
 			col = 0;
-			
+
 			p = P3;
 			if ((p & 0x08) == 0x00)
 			{
@@ -566,7 +582,7 @@ unsigned char GetKeyPress()
 			{
 				col = 4;
 			}
-			
+
 			P3 = 0xf0;
 			p = P3;
 			if ((p & 0x80) == 0x00)
@@ -585,20 +601,20 @@ unsigned char GetKeyPress()
 			{
 				row = 4;
 			}
-			
-			while(P3 != 0xf0)
+
+			while (P3 != 0xf0)
 			{
 				P0 = 0x00;
 			}
 		}
 	}
-	
+
 	if ((col == 0) || (row == 0))
 	{
 		return 0x00;
 	}
 	else
 	{
-		return g_keyCode[row - 1][col - 1];
+		return g_KeyCode[row - 1][col - 1];
 	}
 }
